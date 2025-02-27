@@ -1,4 +1,6 @@
 #include <DaisyDuino.h>
+#include <vector>
+
 #include "OscGrain.h"
 
 DaisyHardware hw;
@@ -18,12 +20,14 @@ void setup()
     delay(5000);
     // Initialize for Daisy pod at 48kHz
     hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    sineGrain = OscGrain(DAISY.get_samplerate());
+    std::vector<float> frequencies = {170.0f};
+    std::vector<float> amplitudes = {0.5f};
+    sineGrain = OscGrain(DAISY.get_samplerate(), frequencies, amplitudes);
     DAISY.begin(MyCallback);
 }
 
 void loop()
 {
-    sineGrain.Play(1000, 1.0f);
+    sineGrain.Play(50);
     delay(5000);
 }

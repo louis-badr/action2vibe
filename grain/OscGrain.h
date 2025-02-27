@@ -1,9 +1,9 @@
-#ifndef SineWavesGrain_h
-#define SineWavesGrain_h
+#ifndef OscGrain_h
+#define OscGrain_h
 
 #include <DaisyDuino.h>
 
-class SineWavesGrain
+class OscGrain
 {
 private:
     Oscillator osc;
@@ -13,7 +13,8 @@ private:
     unsigned long startTime;
 
 public:
-    SineWavesGrain(float sample_rate);
+    OscGrain();
+    OscGrain(float sample_rate);
     float Process();
     void Play(int duration, float amplitude);
 };

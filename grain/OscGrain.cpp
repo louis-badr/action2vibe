@@ -1,7 +1,9 @@
 #include <DaisyDuino.h>
-#include "SineWavesGrain.h"
+#include "OscGrain.h"
 
-SineWavesGrain::SineWavesGrain(float sample_rate)
+OscGrain::OscGrain() {}
+
+OscGrain::OscGrain(float sample_rate)
 {
     osc.Init(sample_rate);
     osc.SetFreq(440.0f);
@@ -11,7 +13,7 @@ SineWavesGrain::SineWavesGrain(float sample_rate)
     isPlaying = false;
 }
 
-float SineWavesGrain::Process()
+float OscGrain::Process()
 {
     if (isPlaying)
     {
@@ -24,7 +26,7 @@ float SineWavesGrain::Process()
     return osc.Process();
 }
 
-void SineWavesGrain::Play(int duration, float amplitude)
+void OscGrain::Play(int duration, float amplitude)
 {
     this->duration = duration;
     this->amplitude = amplitude;
