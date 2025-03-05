@@ -4,6 +4,7 @@
 
 #include "OscGrain.h"
 #include "VibeRenderer.h"
+#include "WhiteNoiseGrain.h"
 
 #define FAST_MODE
 #define BNO08X_RESET -1
@@ -21,8 +22,11 @@ sh2_SensorId_t reportType = SH2_GYRO_INTEGRATED_RV;
 long reportIntervalUs = 2000;
 
 DaisyHardware hw;
-OscGrain sineGrain;
-VibeRenderer vibeRenderer;
+OscGrain sineGrain1;
+OscGrain sineGrain2;
+WhiteNoiseGrain noiseGrain;
+VibeRenderer vibeRenderer1;
+VibeRenderer VibeRenderer2;
 
 void setReports(sh2_SensorId_t reportType, long report_interval)
 {
@@ -59,20 +63,21 @@ void quaternionToEulerGI(sh2_GyroIntegratedRV_t *rotational_vector, euler_t *ypr
 
 void AudioCallback(float **in, float **out, size_t size)
 {
+    float signal;
     for (size_t i = 0; i < size; i++)
     {
-        out[0][i] = sineGrain.Process();
+        signal = sineGrain1.Process() + sineGrain2.Process();
+        signal /= 2;
+        out[0][i] = signal;
     }
 }
 
 void setup(void)
 {
     Serial.begin();
-
-    delay(1000); // Allow time for power stabilization
-
+    delay(1000);
     pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH); // Turn on LED to show startup
+    digitalWrite(LED_BUILTIN, HIGH);
 
     if (!bno08x.begin_I2C())
     {
@@ -90,11 +95,16 @@ void setup(void)
     setReports(reportType, reportIntervalUs);
 
     hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    std::vector<float> frequencies = {170.0f};
-    std::vector<float> amplitudes = {0.15f};
-    sineGrain = OscGrain(DAISY.get_samplerate(), frequencies, amplitudes, 12);
-    std::vector<float> binSizes(12, 15.0f);
-    vibeRenderer = VibeRenderer(sineGrain, binSizes);
+    std::vector<float> frequencies1 = {120.0f};
+    std::vector<float> frequencies2 = {220.0f};
+    std::vector<float> amplitudes = {0.5f};
+    sineGrain1 = OscGrain(DAISY.get_samplerate(), frequencies1, amplitudes, 12);
+    sineGrain2 = OscGrain(DAISY.get_samplerate(), frequencies2, amplitudes, 12);
+    noiseGrain = WhiteNoiseGrain(0.5f, 20);
+    std::vector<float> binSizes1(12, 15.0f);
+    std::vector<float> binSizes2(24, 7.5f);
+    vibeRenderer1 = VibeRenderer(sineGrain1, binSizes1);
+    VibeRenderer2 = VibeRenderer(sineGrain2, binSizes2);
 
     delay(1000); // Ensures stable startup
     DAISY.begin(AudioCallback);
@@ -112,6 +122,7 @@ void loop()
     if (bno08x.getSensorEvent(&sensorValue))
     {
         quaternionToEulerGI(&sensorValue.un.gyroIntegratedRV, &ypr, true);
-        vibeRenderer.Update(fabs(ypr.roll));
+        vibeRenderer1.Update(fabs(ypr.roll));
+        VibeRenderer2.Update(fabs(ypr.yaw));
     }
 }

@@ -15,7 +15,8 @@ void MyCallback(float **in, float **out, size_t size)
 void setup()
 {
     Serial.begin();
-    delay(5000);
+    delay(1000);
+    noiseGrain = WhiteNoiseGrain(0.5f, 20);
     // Initialize for Daisy pod at 48kHz
     hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
     DAISY.begin(MyCallback);
@@ -23,6 +24,6 @@ void setup()
 
 void loop()
 {
-    noiseGrain.Play(1000, 0.1f);
-    delay(5000);
+    noiseGrain.Play();
+    delay(3000);
 }
