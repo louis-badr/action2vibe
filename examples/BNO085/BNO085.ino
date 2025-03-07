@@ -1,11 +1,7 @@
+#include <Action2Vibe.h>
 #include <Adafruit_BNO08x.h>
 #include <DaisyDuino.h>
 #include <vector>
-
-#include "OscGrain.h"
-#include "Grain.h"
-#include "VibeRenderer.h"
-#include "WhiteNoiseGrain.h"
 
 #define FAST_MODE
 #define BNO08X_RESET -1
