@@ -102,10 +102,9 @@ void setup(void)
 
     // init grains
     std::vector<float> frequencies1 = {120.0f};
-    std::vector<float> frequencies2 = {220.0f};
     std::vector<float> amplitudes = {1.0f};
     grains.push_back(new OscGrain(DAISY.get_samplerate(), frequencies1, amplitudes, 12));
-    grains.push_back(new WhiteNoiseGrain(1.0, 12));
+    grains.push_back(new WhiteNoiseGrain(DAISY.get_samplerate(), 1.0, 12));
 
     // init vibe renderers
     std::vector<float> binSizes1(24, 7.5f);

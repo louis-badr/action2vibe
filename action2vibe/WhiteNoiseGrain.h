@@ -8,6 +8,7 @@ class WhiteNoiseGrain : public Grain
 {
 private:
     WhiteNoise nse;
+    Tone filter;
     bool isPlaying;
     int duration;
     float amplitude;
@@ -15,7 +16,7 @@ private:
 
 public:
     WhiteNoiseGrain();
-    WhiteNoiseGrain(float amplitude, int duration);
+    WhiteNoiseGrain(float sample_rate, float amplitude, int duration);
     float Process() override;
     void Play() override;
 };
