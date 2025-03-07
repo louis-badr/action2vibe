@@ -9,6 +9,7 @@ WhiteNoiseGrain::WhiteNoiseGrain(float amplitude, int duration)
     this->duration = duration;
     nse.Init();
     nse.SetAmp(0);
+    filter.Init();
     isPlaying = false;
 }
 

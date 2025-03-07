@@ -2,7 +2,7 @@
 
 VibeRenderer::VibeRenderer() {}
 
-VibeRenderer::VibeRenderer(OscGrain &grain, std::vector<float> &binSizes)
+VibeRenderer::VibeRenderer(Grain &grain, std::vector<float> &binSizes)
 {
     this->grain = &grain;
     this->binSizes = binSizes;

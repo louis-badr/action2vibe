@@ -8,13 +8,13 @@
 class VibeRenderer
 {
 private:
-    OscGrain *grain;
+    Grain *grain;
     std::vector<float> binSizes;
     std::vector<float> binValues;
     int currentBin;
 public:
     VibeRenderer();
-    VibeRenderer(OscGrain &grain, std::vector<float> &binSizes);
+    VibeRenderer(Grain &grain, std::vector<float> &binSizes);
     void Update(float sensorValue);
 };
 

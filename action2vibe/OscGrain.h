@@ -3,8 +3,9 @@
 
 #include <DaisyDuino.h>
 #include <vector>
+#include "Grain.h"
 
-class OscGrain
+class OscGrain : public Grain
 {
 private:
     std::vector<Oscillator> oscs;
@@ -16,8 +17,8 @@ private:
 public:
     OscGrain();
     OscGrain(float sample_rate, std::vector<float> &frequencies, std::vector<float> &amplitudes, int duration);
-    float Process();
-    void Play();
+    float Process() override;
+    void Play() override;
 };
 
 #endif
