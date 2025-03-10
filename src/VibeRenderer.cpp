@@ -17,11 +17,6 @@ VibeRenderer::VibeRenderer(Grain &grain, std::vector<float> &binSizes)
 
 void VibeRenderer::Update(float sensorValue)
 {
-    // if (sensorValue >= 170.0 && sensorValue <= 171.0)
-    // {
-    //     grain->Play();
-    // }
-
     // if currentBin is -1, find the bin that sensorValue falls into
     if (currentBin == -1)
     {
@@ -34,7 +29,7 @@ void VibeRenderer::Update(float sensorValue)
             }
         }
     }
-    // if currentBin is not -1, check if sensorValue is outside of current bin
+    // if currentBin is not -1, check if sensorValue is outside of current bin and update currentBin if so
     else
     {
         if (currentBin > 0 && sensorValue < binValues[currentBin - 1])
@@ -48,4 +43,19 @@ void VibeRenderer::Update(float sensorValue)
             currentBin++;
         }
     }
+}
+
+float VibeRenderer::GetDistanceToNextBin(float sensorValue)
+{
+    return binValues[currentBin] - sensorValue;
+}
+
+float VibeRenderer::GetDistanceToPreviousBin(float sensorValue)
+{
+    return sensorValue - binValues[currentBin - 1];
+}
+
+float VibeRenderer::GetDistanceToClosestBin(float sensorValue)
+{
+    return min(GetDistanceToNextBin(sensorValue), GetDistanceToPreviousBin(sensorValue));
 }

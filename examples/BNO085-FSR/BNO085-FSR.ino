@@ -95,16 +95,19 @@ void setup(void)
 
     // init Daisy seed at 48kHz
     hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    analogReadResolution(16);
 
     // init grains
-    std::vector<float> frequencies1 = {120.0f};
+    std::vector<float> frequencies1 = {140.0f};
+    std::vector<float> frequencies2 = {80.0f};
     std::vector<float> amplitudes = {1.0f};
     grains.push_back(new OscGrain(DAISY.get_samplerate(), frequencies1, amplitudes, 12));
-    grains.push_back(new WhiteNoiseGrain(DAISY.get_samplerate(), 1.0, 12));
+    grains.push_back(new OscGrain(DAISY.get_samplerate(), frequencies2, amplitudes, 12));
+    // grains.push_back(new WhiteNoiseGrain(DAISY.get_samplerate(), 1.0, 12));
 
     // init vibe renderers
-    std::vector<float> binSizes1(24, 7.5f);
-    std::vector<float> binSizes2(24, 7.5f);
+    std::vector<float> binSizes1(24, 180.0f / 24.0f);                                                         // gyro value is set to 0-180 - 24 bins of 7.5 degrees
+    std::vector<float> binSizes2 = {10000.0f, 8500.0f, 7200.0f, 6100.0f, 5200.0f, 4400.0f, 3800.0f, 3200.0f}; // fsr range is approx 5000-60000 - bins get smaller because the value is not linear with force
     vibeRenderers.push_back(VibeRenderer(*grains[0], binSizes1));
     vibeRenderers.push_back(VibeRenderer(*grains[1], binSizes2));
 
@@ -128,6 +131,6 @@ void loop()
         quaternionToEulerGI(&sensorValue.un.gyroIntegratedRV, &ypr, true);
         // feeding sensor values to VibeRenderer here
         vibeRenderers[0].Update(fabs(ypr.roll));
-        vibeRenderers[1].Update(fabs(ypr.yaw));
     }
+    vibeRenderers[1].Update(analogRead(A0));
 }

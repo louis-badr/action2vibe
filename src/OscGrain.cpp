@@ -48,6 +48,7 @@ void OscGrain::Play()
     {
         for (int i = 0; i < oscs.size(); i++)
         {
+            oscs[i].Reset();
             oscs[i].SetAmp(amplitudes[i]);
         }
         isPlaying = true;
