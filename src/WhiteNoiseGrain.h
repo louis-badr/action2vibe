@@ -10,13 +10,13 @@ private:
     WhiteNoise nse;
     Tone filter;
     bool isPlaying;
-    int duration;
+    float duration;
     float amplitude;
     unsigned long startTime;
 
 public:
     WhiteNoiseGrain();
-    WhiteNoiseGrain(float sample_rate, float amplitude, int duration);
+    WhiteNoiseGrain(float sample_rate, float amplitude, float duration);
     float Process() override;
     void Play() override;
 };

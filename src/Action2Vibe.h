@@ -3,7 +3,7 @@
 
 #include "OscGrain.h"
 #include "Grain.h"
-#include "VibeRenderer.h"
+#include "BinRenderer.h"
 #include "WhiteNoiseGrain.h"
 
 #endif

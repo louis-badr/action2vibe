@@ -2,23 +2,27 @@
 #define OscGrain_h
 
 #include <DaisyDuino.h>
-#include <vector>
 #include "Grain.h"
 
 class OscGrain : public Grain
 {
 private:
-    std::vector<Oscillator> oscs;
+    Oscillator osc;
     bool isPlaying;
-    int duration;
-    std::vector<float> amplitudes;
+    float frequency;
+    float amplitude;
+    float duration;
     unsigned long startTime;
 
 public:
     OscGrain();
-    OscGrain(float sample_rate, std::vector<float> &frequencies, std::vector<float> &amplitudes, int duration);
+    OscGrain(float sample_rate, float frequency, float amplitude, float duration);
     float Process() override;
     void Play() override;
+    void SetFrequency(float frequency);
+    void SetAmplitude(float amplitude);
+    void SetDuration(int duration);
+    void AdjustDuration();    
 };
 
 #endif

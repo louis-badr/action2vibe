@@ -19,8 +19,8 @@ sh2_SensorId_t reportType = SH2_GYRO_INTEGRATED_RV;
 long reportIntervalUs = 2000;
 
 DaisyHardware hw;
-std::vector<Grain *> grains;             // store pointers to grains here
-std::vector<VibeRenderer> vibeRenderers; // store vibe renderers here
+std::vector<Grain *> grains;           // store pointers to grains here
+std::vector<BinRenderer> binRenderers; // store vibe renderers here
 
 void setReports(sh2_SensorId_t reportType, long report_interval)
 {
@@ -98,18 +98,16 @@ void setup(void)
     analogReadResolution(16);
 
     // init grains
-    std::vector<float> frequencies1 = {140.0f};
-    std::vector<float> frequencies2 = {80.0f};
-    std::vector<float> amplitudes = {1.0f};
-    grains.push_back(new OscGrain(DAISY.get_samplerate(), frequencies1, amplitudes, 12));
-    grains.push_back(new OscGrain(DAISY.get_samplerate(), frequencies2, amplitudes, 12));
+    grains.push_back(new OscGrain(DAISY.get_samplerate(), 350.0f, 1.0f, 12));
+    grains[0]->AdjustDuration();
+    grains.push_back(new OscGrain(DAISY.get_samplerate(), 80.0f, 1.0f, 12));
     // grains.push_back(new WhiteNoiseGrain(DAISY.get_samplerate(), 1.0, 12));
 
     // init vibe renderers
     std::vector<float> binSizes1(24, 180.0f / 24.0f);                                                         // gyro value is set to 0-180 - 24 bins of 7.5 degrees
     std::vector<float> binSizes2 = {10000.0f, 8500.0f, 7200.0f, 6100.0f, 5200.0f, 4400.0f, 3800.0f, 3200.0f}; // fsr range is approx 5000-60000 - bins get smaller because the value is not linear with force
-    vibeRenderers.push_back(VibeRenderer(*grains[0], binSizes1));
-    vibeRenderers.push_back(VibeRenderer(*grains[1], binSizes2));
+    binRenderers.push_back(BinRenderer(*grains[0], binSizes1));
+    binRenderers.push_back(BinRenderer(*grains[1], binSizes2));
 
     delay(1000);
 
@@ -129,8 +127,8 @@ void loop()
     if (bno08x.getSensorEvent(&sensorValue))
     {
         quaternionToEulerGI(&sensorValue.un.gyroIntegratedRV, &ypr, true);
-        // feeding sensor values to VibeRenderer here
-        vibeRenderers[0].Update(fabs(ypr.roll));
+        // feeding sensor values to BinRenderer here
+        binRenderers[0].Update(fabs(ypr.roll));
     }
-    vibeRenderers[1].Update(analogRead(A0));
+    binRenderers[1].Update(analogRead(A0));
 }

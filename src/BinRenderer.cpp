@@ -1,8 +1,8 @@
-#include "VibeRenderer.h"
+#include "BinRenderer.h"
 
-VibeRenderer::VibeRenderer() {}
+BinRenderer::BinRenderer() {}
 
-VibeRenderer::VibeRenderer(Grain &grain, std::vector<float> &binSizes)
+BinRenderer::BinRenderer(Grain &grain, std::vector<float> &binSizes)
 {
     this->grain = &grain;
     this->binSizes = binSizes;
@@ -15,7 +15,7 @@ VibeRenderer::VibeRenderer(Grain &grain, std::vector<float> &binSizes)
     currentBin = -1;
 }
 
-void VibeRenderer::Update(float sensorValue)
+void BinRenderer::Update(float sensorValue)
 {
     // if currentBin is -1, find the bin that sensorValue falls into
     if (currentBin == -1)
@@ -45,17 +45,17 @@ void VibeRenderer::Update(float sensorValue)
     }
 }
 
-float VibeRenderer::GetDistanceToNextBin(float sensorValue)
+float BinRenderer::GetDistanceToNextBin(float sensorValue)
 {
     return binValues[currentBin] - sensorValue;
 }
 
-float VibeRenderer::GetDistanceToPreviousBin(float sensorValue)
+float BinRenderer::GetDistanceToPreviousBin(float sensorValue)
 {
     return sensorValue - binValues[currentBin - 1];
 }
 
-float VibeRenderer::GetDistanceToClosestBin(float sensorValue)
+float BinRenderer::GetDistanceToClosestBin(float sensorValue)
 {
     return min(GetDistanceToNextBin(sensorValue), GetDistanceToPreviousBin(sensorValue));
 }

@@ -1,11 +1,11 @@
-#ifndef VibeRenderer_h
-#define VibeRenderer_h
+#ifndef BinRenderer_h
+#define BinRenderer_h
 
 #include <vector>
 
 #include "OscGrain.h"
 
-class VibeRenderer
+class BinRenderer
 {
 private:
     Grain *grain;
@@ -14,8 +14,8 @@ private:
     int currentBin;
 
 public:
-    VibeRenderer();
-    VibeRenderer(Grain &grain, std::vector<float> &binSizes);
+    BinRenderer();
+    BinRenderer(Grain &grain, std::vector<float> &binSizes);
     void Update(float sensorValue);
     float GetDistanceToNextBin(float sensorValue);
     float GetDistanceToPreviousBin(float sensorValue);
