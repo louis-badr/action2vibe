@@ -1,14 +1,22 @@
-#include "AccelRenderer.h"
+#ifndef AccelRenderer_h
+#define AccelRenderer_h
 
-AccelRenderer::AccelRenderer() {}
+#include <vector>
 
-AccelRenderer::AccelRenderer(Grain &grain)
+#include "OscGrain.h"
+
+class AccelRenderer
 {
-    this->grain = &grain;
-}
+private:
+    Grain *grain;
+    float frequency;
+    float previousSensorValue;
+    unsigned long previousTime;
 
-void AccelRenderer::Update(float sensorValue)
-{
-    // MAGIC
+public:
+    AccelRenderer();
+    AccelRenderer(Grain &grain);
+    void Update(float sensorValue);
+};
 
-}
+#endif

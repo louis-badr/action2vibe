@@ -2,7 +2,6 @@
 #define BinRenderer_h
 
 #include <vector>
-
 #include "OscGrain.h"
 
 class BinRenderer

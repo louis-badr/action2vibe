@@ -1,21 +1,37 @@
-#ifndef AccelRenderer_h
-#define AccelRenderer_h
+#include "AccelRenderer.h"
 
-#include <vector>
-
-#include "OscGrain.h"
-
-class AccelRenderer
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max)
 {
-private:
-    Grain *grain;
-    float frequency;
-    float previousSensorValue;
+    return out_min + (out_max - out_min) * ((x - in_min) / (in_max - in_min));
+}
 
-public:
-    AccelRenderer();
-    AccelRenderer(Grain &grain);
-    void Update(float sensorValue);
-};
+AccelRenderer::AccelRenderer() {}
 
-#endif
+AccelRenderer::AccelRenderer(Grain &grain)
+{
+    this->grain = &grain;
+    this->frequency = 0;
+    this->previousTime = -1;
+}
+
+void AccelRenderer::Update(float sensorValue)
+{
+    if (previousTime == -1)
+    {
+        previousSensorValue = sensorValue;
+        previousTime = micros();
+    }
+    float sensorValueDiff = fabs(sensorValue - previousSensorValue);
+    frequency = mapFloat(sensorValueDiff, 0, 180, 0, 500);
+    if (frequency != 0 && micros() - previousTime >= 1000000.0 / frequency)
+    {
+        grain->Play();
+        previousTime = micros();
+        Serial.print(sensorValue);
+        Serial.print("\t");
+        Serial.print(sensorValueDiff);
+        Serial.print("\t");
+        Serial.println(frequency);
+    }
+    previousSensorValue = sensorValue;
+}

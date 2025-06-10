@@ -22,6 +22,8 @@ DaisyHardware hw;
 std::vector<Grain *> grains; // store pointers to grains here
 BinRenderer binRenderer1;
 BinRenderer binRenderer2;
+AccelRenderer accelRenderer1;
+AccelRenderer accelRenderer2;
 
 void setReports(sh2_SensorId_t reportType, long report_interval)
 {
@@ -92,16 +94,18 @@ void setup(void)
     analogReadResolution(16);
 
     // init grains
-    grains.push_back(new OscGrain(DAISY.get_samplerate(), 80.0f, 1.0f, 12));
+    grains.push_back(new OscGrain(DAISY.get_samplerate(), 350.0f, 1.0f, 12));
     grains[0]->AdjustDuration();
     grains.push_back(new OscGrain(DAISY.get_samplerate(), 80.0f, 1.0f, 12));
     // grains.push_back(new WhiteNoiseGrain(DAISY.get_samplerate(), 1.0, 12));
 
     // init bin renderers
-    std::vector<float> binSizes1(24, 180.0f / 24.0f);                                                         // gyro value is set to 0-180 - 24 bins of 7.5 degrees
-    std::vector<float> binSizes2 = {10000.0f, 8500.0f, 7200.0f, 6100.0f, 5200.0f, 4400.0f, 3800.0f, 3200.0f}; // fsr range is approx 5000-60000 - bins get smaller because the value is not linear with force
-    binRenderer1 = BinRenderer(*grains[0], binSizes1);
-    binRenderer2 = BinRenderer(*grains[1], binSizes2);
+    std::vector<float> binSizes1(24, 180.0f / 24.0f); // gyro value is set to 0-180 - 24 bins of 7.5 degrees
+    // std::vector<float> binSizes2 = {10000.0f, 8500.0f, 7200.0f, 6100.0f, 5200.0f, 4400.0f, 3800.0f, 3200.0f}; // fsr range is approx 5000-60000 - bins get smaller because the value is not linear with force
+    // binRenderer1 = BinRenderer(*grains[0], binSizes1);
+    // binRenderer2 = BinRenderer(*grains[1], binSizes2);
+    accelRenderer1 = AccelRenderer(*grains[0]);
+    accelRenderer2 = AccelRenderer(*grains[1]);
 
     delay(1000);
 
@@ -122,7 +126,9 @@ void loop()
     {
         quaternionToEulerGI(&sensorValue.un.gyroIntegratedRV, &ypr, true);
         // feeding sensor values to BinRenderer here
-        binRenderer1.Update(fabs(ypr.roll));
+        // binRenderer1.Update(fabs(ypr.roll));
+        accelRenderer1.Update(fabs(ypr.roll));
     }
-    binRenderer2.Update(analogRead(A0));
+    // binRenderer2.Update(analogRead(A0));
+    accelRenderer2.Update(analogRead(A0));
 }
