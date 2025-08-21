@@ -12,7 +12,7 @@ private:
     float frequency;
     float amplitude;
     float duration;
-    unsigned long startTime;
+    unsigned long endTime;
 
 public:
     OscGrain();
@@ -21,8 +21,8 @@ public:
     void Play() override;
     void SetFrequency(float frequency);
     void SetAmplitude(float amplitude);
-    void SetDuration(int duration);
-    void AdjustDuration();    
+    void SetDuration(float duration);
+    void AdjustDuration();
 };
 
 #endif

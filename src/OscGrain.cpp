@@ -17,17 +17,19 @@ OscGrain::OscGrain(float sample_rate, float frequency, float amplitude, float du
 
 float OscGrain::Process()
 {
-    float out = 0.0f;
     if (isPlaying)
     {
-        if (micros() - startTime > duration)
+        if (micros() >= endTime)
         {
             osc.SetAmp(0.0f);
             isPlaying = false;
         }
-        out = osc.Process();
+        else
+        {
+            return osc.Process();
+        }
     }
-    return out;
+    return 0.0f;
 }
 
 void OscGrain::Play()
@@ -35,10 +37,10 @@ void OscGrain::Play()
     // only play grain if it's not already playing
     if (!isPlaying)
     {
-        osc.Reset();
+        osc.Reset();    // reset phase
         osc.SetAmp(amplitude);
         isPlaying = true;
-        startTime = micros();
+        endTime = micros() + duration;
     }
 }
 
@@ -54,7 +56,7 @@ void OscGrain::SetAmplitude(float amplitude)
     osc.SetAmp(amplitude);
 }
 
-void OscGrain::SetDuration(int duration)
+void OscGrain::SetDuration(float duration)
 {
     this->duration = duration * 1000;
 }

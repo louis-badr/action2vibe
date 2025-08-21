@@ -3,8 +3,9 @@
 
 WhiteNoiseGrain::WhiteNoiseGrain() {}
 
-WhiteNoiseGrain::WhiteNoiseGrain(float sample_rate, float amplitude, float duration)
+WhiteNoiseGrain::WhiteNoiseGrain(float sample_rate, float cutoff, float amplitude, float duration)
 {
+    this->cutoff = cutoff;
     this->amplitude = amplitude;
     this->duration = duration * 1000;
     nse.Init();
@@ -15,19 +16,21 @@ WhiteNoiseGrain::WhiteNoiseGrain(float sample_rate, float amplitude, float durat
 
 float WhiteNoiseGrain::Process()
 {
-    float cutoff_freq = 500.0f;
-    float signal;
-    filter.SetFreq(cutoff_freq);
     if (isPlaying)
     {
-        if (micros() - startTime > duration)
+        if (micros() >= endTime)
         {
             nse.SetAmp(0);
             isPlaying = false;
         }
+        else
+        {
+            filter.SetFreq(cutoff);
+            float signal = nse.Process();
+            return filter.Process(signal);
+        }
     }
-    signal = nse.Process();
-    return filter.Process(signal);
+    return 0.0f;
 }
 
 void WhiteNoiseGrain::Play()
@@ -37,6 +40,6 @@ void WhiteNoiseGrain::Play()
     {
         nse.SetAmp(amplitude);
         isPlaying = true;
-        startTime = micros();
+        endTime = micros() + duration;
     }
 }

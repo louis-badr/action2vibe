@@ -5,13 +5,12 @@ class Grain
 {
 private:
     bool isPlaying;
-    unsigned long startTime;
-    int duration;
+    unsigned long endTime;
+    float duration;
 
 public:
     virtual float Process() = 0;
     virtual void Play() = 0;
-    virtual void AdjustDuration() = 0;
 };
 
 #endif
